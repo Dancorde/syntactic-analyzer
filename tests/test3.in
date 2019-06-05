@@ -1,0 +1,6 @@
+program lalg;
+{numeros grandes}
+var a: integer;
+begin
+readd(431.45534534453, a, 139821748934623);
+end.

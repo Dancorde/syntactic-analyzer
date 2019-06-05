@@ -1,0 +1,17 @@
+program
+var
+const
+integer
+real
+begin
+end
+read
+write
+procedure
+if
+then
+else
+do
+while
+for
+to

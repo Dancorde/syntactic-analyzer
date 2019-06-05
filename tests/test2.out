@@ -1,0 +1,22 @@
+program - program
+lalg - id
+; - ;
+var - var
+a - id
+, - ,
+minha_variavel - erro - identificador muito grande
+: - :
+integer - integer
+; - ;
+begin - begin
+readd - id
+( - (
+a - id
+, - ,
+@ - erro - simbolo não pertence a linguagem
+, - ,
+1.a23 - erro - numero real mal formatado
+) - )
+; - ;
+end - end
+. - .

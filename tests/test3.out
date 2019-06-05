@@ -1,0 +1,20 @@
+program - program
+lalg - id
+; - ;
+var - var
+a - id
+: - :
+integer - integer
+; - ;
+begin - begin
+readd - id
+( - (
+431.45534534453 - erro - numero real muito grande
+, - ,
+a - id
+, - ,
+139821748934623 - erro - numero inteiro muito grande
+) - )
+; - ;
+end - end
+. - .
