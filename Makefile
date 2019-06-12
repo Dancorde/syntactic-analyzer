@@ -13,3 +13,8 @@ debug: all
 	valgrind --leak-check=full --show-leak-kinds=all ./scanner < ./tests/test2.in > ./tests/test2.out
 	valgrind --leak-check=full --show-leak-kinds=all ./scanner < ./tests/test3.in > ./tests/test3.out
 	valgrind --leak-check=full --show-leak-kinds=all ./scanner < ./tests/test4.in > ./tests/test4.out
+
+test:
+	yacc -d syntax.y 
+	lex scanner.l
+	gcc lex.yy.c y.tab.c -obas.exe

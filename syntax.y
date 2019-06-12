@@ -9,14 +9,14 @@ extern YYSTYPE yylval;
 %token program
 %token var
 %token const
-%token :
-%token ,
+//%token :
+//%token ,
 %token integer
 %token real
 %token begin
 %token end
 %token .
-%token ;
+//%token ;
 %token read
 %token write
 %token procedure
@@ -27,26 +27,26 @@ extern YYSTYPE yylval;
 %token while
 %token for
 %token to
-%token :=
-%token =
-%token (
-%token )
-%token <
+//%token ':='
+//%token =
+//%token (
+//%token )
+//%token <
 %token <=
 %token >
-%token >=
-%token <>
-%token +
-%token -
-%left *
-%left /
+//%token >=
+//%token <>
+//%token +
+//%token -
+//%left *
+//%left /
 %token id
-%token numero_int
-%token numero_real
+%token <integer> numero_int
+%token <real> numero_real
 
 %%
 
-PROGRAMA: program id ; CORPO . { //comando em C }
+PROGRAMA: program id ; CORPO //. { //comando em C }
 ;
 
 CORPO: DC begin COMANDOS end
