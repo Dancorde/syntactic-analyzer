@@ -24,7 +24,8 @@
 
   extern int yylex ();
   extern void yyerror (const char *);
-#line 10 "syntax.y"
+  extern int yylineno;
+#line 11 "syntax.y"
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
@@ -37,7 +38,7 @@ typedef union {
 	double real;
 } YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */
-#line 41 "y.tab.c"
+#line 42 "y.tab.c"
 
 /* compatibility with bison */
 #ifdef YYPARSE_PARAM
@@ -343,7 +344,7 @@ typedef struct {
 } YYSTACKDATA;
 /* variables for the parser stack */
 static YYSTACKDATA yystack;
-#line 188 "syntax.y"
+#line 175 "syntax.y"
 
 void yyerror(const char *str) { 
     printf("ERROR\n");
@@ -358,7 +359,7 @@ int main(void){
   return yyparse();
   return 0;
 }
-#line 362 "y.tab.c"
+#line 363 "y.tab.c"
 
 #if YYDEBUG
 #include <stdio.h>		/* needed for printf */
