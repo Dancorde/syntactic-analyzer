@@ -1,145 +1,144 @@
 %{
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
 
-#define YYSTYPE *char
-extern YYSTYPE yylval;
-
+  extern int yylex ();
+  extern void yyerror (const char *);
 %}
 
+%union {
+	int integer;
+	char *string;
+	double real;
+}
+
 %start PROGRAMA
-%token program
-%token var
-%token const
-//%token :
-//%token ,
-%token integer
-%token real
-%token begin
-%token end
-%token .
-//%token ;
-%token read
-%token write
-%token procedure
-%token if
-%token then
-%token else
-%token do
-%token while
-%token for
-%token to
-//%token ':='
-//%token =
-//%token (
-//%token )
-//%token <
-%token <=
-%token >
-//%token >=
-//%token <>
-//%token +
-//%token -
-//%left *
-//%left /
-%token id
+
+%token <string> pr_program
+%token <string> pr_id
+%token <string> pr_begin
+%token <string> pr_end
+%token <string> pr_var
+%token <string> pr_integer
+%token <string> pr_real
+%token <string> pr_const
+%token <string> pr_read
+%token <string> pr_write
+%token <string> pr_procedure
+%token <string> pr_if
+%token <string> pr_then
+%token <string> pr_else
+%token <string> pr_do
+%token <string> pr_while
+%token <string> pr_for
+%token <string> pr_to
+
+%token <string> op_atribuicao op_ari_igual op_ari_mult op_ari_div op_ari_adi op_ari_sub
+
+%token <string> op_rel_igual op_rel_diferente op_rel_maior op_rel_menor op_rel_maiorIgual op_rel_menorIgual 
+
+%token <string> ponto ponto_virgula virgula dois_pontos abre_par fecha_par
+
 %token <integer> numero_int
 %token <real> numero_real
 
 %%
 
-PROGRAMA: program id ; CORPO //. { //comando em C }
+PROGRAMA: pr_program pr_id ; CORPO //. { //comando em C }
 ;
 
-CORPO: DC begin COMANDOS end
+CORPO: DC pr_begin COMANDOS pr_end
 ;
 
 DC: DC_C DC_V DC_P
 ;
 
-DC_C: const id = NUMERO ; DC_C 
+DC_C: pr_const pr_id op_ari_igual NUMERO ponto_virgula DC_C 
 | 
 ;
 
-DC_V: var VARIAVEIS: TIPO_VAR ; DC_V 
+DC_V: pr_var VARIAVEIS dois_pontos TIPO_VAR ponto_virgula DC_V 
 | 
 ;
 
-TIPO_VAR: real 
-| integer
+TIPO_VAR: numero_real 
+| numero_int
 ;
 
-VARIAVEIS: id MAIS_VAR
+VARIAVEIS: pr_id MAIS_VAR
 ;
 
-MAIS_VAR: , VARIAVEIS 
+MAIS_VAR: virgula VARIAVEIS 
 | 
 ;
 
-DC_P: procedure id PARAMETROS ; CORPO_P DC_P 
+DC_P: pr_procedure pr_id PARAMETROS ponto_virgula CORPO_P DC_P 
 | 
 ;
 
-PARAMETROS: ( LISTA_PAR ) 
+PARAMETROS: abre_par LISTA_PAR fecha_par
 | 
 ;
 
-LISTA_PAR: VARIAVEIS: TIPO_VAR MAIS_PAR
+LISTA_PAR: VARIAVEIS dois_pontos TIPO_VAR MAIS_PAR
 ;
 
-MAIS_PAR: ; LISTA_PAR 
+MAIS_PAR: ponto_virgula LISTA_PAR 
 | 
 ;
 
-CORPO_P: DC_LOC begin COMANDOS end ;
+CORPO_P: DC_LOC pr_begin COMANDOS pr_end ;
 ;
 
 DC_LOC: DC_V
 ;
 
-LISTA_ARG: ( ARGUMENTOS ) 
+LISTA_ARG: abre_par ARGUMENTOS fecha_par
 | 
 ;
 
-ARGUMENTOS: id MAIS_ID
+ARGUMENTOS: pr_id MAIS_ID
 ;
 
-MAIS_ID: ; ARGUMENTOS 
+MAIS_ID: ponto_virgula ARGUMENTOS 
 | 
 ;
 
-PFALSA: else CMD 
+PFALSA: pr_else CMD 
 | 
 ;
 
-COMANDOS: CMD ; COMANDOS 
+COMANDOS: CMD ponto_virgula COMANDOS 
 | 
 ;
 
-CMD: read ( VARIAVEIS ) 
-| write ( VARIAVEIS ) 
-| while ( CONDICAO ) do CMD 
-| if CONDICAO then CMD PFALSA 
-| id := EXPRESSAO 
-| id LISTA_ARG 
-| begin COMANDOS end
-| for id := numero_int to numero_int do CMD 
+CMD: pr_read abre_par VARIAVEIS fecha_par 
+| pr_write abre_par VARIAVEIS fecha_par 
+| pr_while abre_par CONDICAO fecha_par pr_do CMD 
+| pr_if CONDICAO pr_then CMD PFALSA 
+| pr_id op_atribuicao EXPRESSAO 
+| pr_id LISTA_ARG 
+| pr_begin COMANDOS pr_end
+| pr_for pr_id op_atribuicao numero_int pr_to numero_int pr_do CMD 
 ;
 
 CONDICAO: EXPRESSAO RELACAO EXPRESSAO
 ;
 
-RELACAO: = 
-| <> 
-| >= 
-| <= 
-| > 
-| <
+RELACAO: op_ari_igual 
+| op_rel_diferente 
+| op_rel_maiorIgual 
+| op_rel_menorIgual 
+| op_rel_maior 
+| op_rel_menor
 ;
 
 EXPRESSAO: TERMO OUTROS_TERMOS
 ;
 
-OP_UN: + 
-| - 
+OP_UN: op_ari_adi 
+| op_ari_sub 
 | 
 ;
 
@@ -147,8 +146,8 @@ OUTROS_TERMOS: OP_AD TERMO OUTROS_TERMOS
 | 
 ;
 
-OP_AD: + 
-| -
+OP_AD: op_ari_adi 
+| op_ari_sub
 ;
 
 TERMO: OP_UN FATOR MAIS_FATORES
@@ -158,28 +157,31 @@ MAIS_FATORES: OP_MUL FATOR MAIS_FATORES
 | 
 ;
 
-OP_MUL: * 
-| /
+OP_MUL: op_ari_mult 
+| op_ari_div
 ;
 
-FATOR: id 
+FATOR: pr_id 
 | NUMERO 
-| ( EXPRESSAO )
+| abre_par EXPRESSAO fecha_par
 ;
 
 NUMERO: numero_int 
 | numero_real
 ;
 
-/* fazer identificacao de comentarios de 1 linha entre {} ?*/
-
 %%
 
-void yyerror(char *s) {
- fprintf(stderr, "%s\n", s);
- return 0;
+void yyerror(const char *str) { 
+    printf("ERROR\n");
+		return;
 }
-int main(void) {
- yyparse();
- return 0;
-} 
+
+int yywrap(){
+  return 1;
+}
+
+int main(void){
+  return yyparse();
+  return 0;
+}

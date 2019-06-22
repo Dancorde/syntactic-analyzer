@@ -1,41 +1,51 @@
 %{
+	#include <stdio.h>
+	#include <stdlib.h>
+  #include <string.h>
+
+  #include "y.tab.h"
+
 	#define YYSTYPE char*
 	extern char *yytext;
+
 %}
 
-digit [0-9]*
-letter [a-zA-Z_]
-op [-+*/]
-simb [=<>.;:,()]
-int {digit}+
-real ({digit}+\.{digit}+)
+%option yylineno
 
-identifier {letter}({letter}|{digit})*
-%%
-":=" {return *yytext;}
-"<=" {return *yytext;}
-">=" {return *yytext;}
-"<>" {return *yytext;}
-"(" {printf("%s - (\n", yytext);}
+delim	[ \t\n]+
+digito [0-9]*
+letra [a-zA-Z]
 
-{op} {return *yytext;}
-{simb} {return *yytext;}
+numero_int {digito}+
+numero_real ({digito}+\.{digito}+)
 
-{identifier} {if(yyleng < 10) return *yytext; else printf("%s - erro - identificador muito grande\n", yytext);}
-{real} {if(yyleng < 15) printf("%s - numero_real\n", yytext); else printf("%s - erro - numero real muito grande\n", yytext);}
-{int} {if(yyleng < 15) printf("%s - numero_int\n", yytext); else printf("%s - erro - numero inteiro muito grande\n", yytext);}
-
-"\{"[^\}]*"\}" {}
-[ \t\n]+ {}
-
-{digit}+"."[^0-9]*{digit}* {printf("%s - erro - numero real mal formatado\n", yytext);}
-. {printf("%s - erro - simbolo não pertence a linguagem\n", yytext);}
-
+identifier {letra}({letra}|{digit}){0,15}
+comment \{[^\}]*\}
 
 %%
 
-int yywrap(void){
-	// Libera o buffer atual para reduzir memory leaks
-	yy_delete_buffer(YY_CURRENT_BUFFER);
-	return 1;
-}
+{delim} 	{ /* Nao faz nada */ }
+{comment} { /* Nao faz nada */ }
+
+"."  			{ return ponto; }
+","  			{ return virgula; }
+";"  			{ return ponto_virgula; }
+":"  			{ return dois_pontos; }
+"("  			{ return abre_par; }
+")"  			{ return fecha_par; }
+
+"="  			{ return op_ari_igual; }
+"=="  		{ return op_rel_igual; }
+"<"  			{ return op_rel_menor; }
+">"  			{ return op_rel_maior; }
+"<="  		{ return op_rel_menorIgual; }
+">="  		{ return op_rel_maiorIgual; }
+"<>"  		{ return op_rel_diferente; }
+":="  		{ return op_atribuicao; }
+
+. 				{ printf("ERROR\nLine %d: lexical error, unregonized token \"%s\"\n\n", yylineno, yytext);}
+
+
+
+%%
+
