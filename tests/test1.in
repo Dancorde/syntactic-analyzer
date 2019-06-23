@@ -2,5 +2,5 @@ program lalg;
 {entrada}
 var a: integer;
 begin
-readd(a, 1.4, 1);
+read(a);
 end.

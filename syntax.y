@@ -45,7 +45,7 @@
 
 %%
 
-PROGRAMA: pr_program pr_id ; CORPO //. { //comando em C }
+PROGRAMA: pr_program pr_id ponto_virgula CORPO ponto
 ;
 
 CORPO: DC pr_begin COMANDOS pr_end
@@ -62,8 +62,8 @@ DC_V: pr_var VARIAVEIS dois_pontos TIPO_VAR ponto_virgula DC_V
 | 
 ;
 
-TIPO_VAR: numero_real 
-| numero_int
+TIPO_VAR: pr_real 
+| pr_integer
 ;
 
 VARIAVEIS: pr_id MAIS_VAR
@@ -88,7 +88,7 @@ MAIS_PAR: ponto_virgula LISTA_PAR
 | 
 ;
 
-CORPO_P: DC_LOC pr_begin COMANDOS pr_end ;
+CORPO_P: DC_LOC pr_begin COMANDOS pr_end ponto_virgula
 ;
 
 DC_LOC: DC_V
@@ -171,15 +171,6 @@ NUMERO: numero_int
 ;
 
 %%
-
-void yyerror(const char *str) { 
-    printf("ERROR\n");
-		return;
-}
-
-int yywrap(){
-  return 1;
-}
 
 int main(void){
   return yyparse();
