@@ -13,19 +13,19 @@
 %option yylineno
 
 delim	[ \t\n]+
-digito [0-9]*
+digito [0-9]
 letra [a-zA-Z]
 
-numero_int {digito}+
-numero_real ({digito}+\.{digito}+)
+numero_int 		{digito}+
+numero_real 	{digito}+\.{digito}+
 
-identifier {letra}({letra}|{digit}){0,15}
-comment \{[^\}]*\}
+identifier 		{letra}({letra}|{digito}){0,15}
+comment 			\{[^\}]*\}
 
 %%
 
-{delim} 	{ /* Nao faz nada */ }
-{comment} { /* Nao faz nada */ }
+{delim} 			{ /* Nao faz nada */ }
+{comment} 		{ /* Nao faz nada */ }
 
 "program"			{ return pr_program; }
 "var"					{ return pr_var; }
@@ -45,6 +45,8 @@ comment \{[^\}]*\}
 "for"					{ return pr_for; }
 "to"					{ return pr_to; }
 
+{identifier} 	{return pr_id;}
+
 "."  					{ return ponto; }
 ","  					{ return virgula; }
 ";"  					{ return ponto_virgula; }
@@ -61,7 +63,22 @@ comment \{[^\}]*\}
 "<>"  				{ return op_rel_diferente; }
 ":="  				{ return op_atribuicao; }
 
+"*"						{ return op_ari_mult; }
+"/"						{ return op_ari_div; }
+"+"						{ return op_ari_adi; }
+"-"						{ return op_ari_sub; }
+
+{numero_int}  { return numero_int; }
+
 . 						{ printf("ERROR\nLine %d: lexical error, unregonized token \"%s\"\n\n", yylineno, yytext);}
 
 %%
 
+void yyerror(const char *str) { 
+    printf("ERROR: Line %d: %s\n\n", yylineno, str);
+		return;
+}
+
+int yywrap(){
+  return 1;
+}
